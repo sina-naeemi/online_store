@@ -1,4 +1,9 @@
 venv/
 .idea/
+Anbar/
+
 **/__pychashe__/
 *.pyc
+
+db.sqlite3
+products/migrations/0001_initial.py
