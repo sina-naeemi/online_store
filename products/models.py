@@ -11,6 +11,9 @@ class Category(models.Model):
     created_time=models.DateTimeField(verbose_name=_("created_time"),auto_now_add=True)
     updated_time=models.DateTimeField(verbose_name=_("updated_time"),auto_now=True)
 
+    def __str__(self):
+        return self.title
+
     class Meta:
         db_table="categories"
         verbose_name=_("category")
@@ -26,6 +29,9 @@ class Product(models.Model):
     created_time=models.DateTimeField(verbose_name=_("created_time"),auto_now_add=True)
     updated_time=models.DateTimeField(verbose_name=_("updated_time"),auto_now=True)
 
+    def __str__(self):
+        return self.title
+
     class Meta:
         db_table="products"
         verbose_name=_("product")
@@ -36,7 +42,7 @@ class Product(models.Model):
 class File(models.Model):
     product=models.ForeignKey("Product" , verbose_name= "product" , on_delete=models.CASCADE)
     title=models.CharField(verbose_name=_("title") , max_length=50)
-    avatar=models.ImageField(verbose_name=_("picture") ,blank=True,upload_to="files/%Y/%m/%d/" )
+    file=models.ImageField(verbose_name=_("picture") ,blank=True,upload_to="files/%Y/%m/%d/" )
     is_enable=models.BooleanField(default=False)
     created_time=models.DateTimeField(verbose_name=_("created_time"),auto_now_add=True)
     updated_time=models.DateTimeField(verbose_name=_("updated_time"),auto_now=True)
