@@ -1,7 +1,6 @@
 from django.contrib import admin
 
 from .models import Category,Product,File
-# Register your models here.
 
 
 @admin.register(Category)

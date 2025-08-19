@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     "products",
+    "User",
+
     'rest_framework',
 ]
 
@@ -125,3 +127,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #Media Files
 MEDIA_ROOT=os.path.join(BASE_DIR , "Anbar/")
 MEDIA_URL="/media/"
+
+#authorize
+AUTH_USER_MODEL="User.User"

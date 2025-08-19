@@ -17,7 +17,7 @@ class User_manager(BaseUserManager):
              raise ValueError("username is necessary")
         email=self.normalize_email(email)
         user=self.model(username=username, email=email , phone_number=phone_number , password=password , is_superuser=is_superuser
-                        , is_staff=is_staff , is_avtivate=True , date_joined=timezone.now() , **extra_fields)
+                        , is_staff=is_staff , is_active=True , date_joined=timezone.now() , **extra_fields)
         
         if not extra_fields.get("no_password"):
             user.set_password(password)
@@ -49,19 +49,25 @@ class User(AbstractBaseUser , PermissionsMixin):
     phone_number=models.BigIntegerField(_("phone number") , unique=True , 
                                                 validators=[validators.RegexValidator(r'^989[0-3,9]\d{8}$',
                                                                         ('Enter a valid mobile number.'),'invalid')] ,
-                                                error_messages={"tekrari": -("this user name is already used try another one.")})
+                                                error_messages={"tekrari": _("this user name is already used try another one.")})
     first_name=models.CharField(max_length=40 , blank=True)
     last_name=models.CharField(max_length=40 , blank=True)
-    is_staff=models.BooleanField(default=False , help_text=-("تعیین سطح دسترسی برای کاربر"))
+    is_staff=models.BooleanField(default=False , help_text=_("تعیین سطح دسترسی برای کاربر"),)
     date_joined=models.DateTimeField(_("date joined"),default=timezone.now)
+    last_seen = models.DateTimeField(_('last seen date'), null=True)
+    is_active=models.BooleanField(default=True , help_text=_("برای اینکه مشخص شود اکانت فعال است یا خیر") , verbose_name=_("is_active"))
+    
+
     
     USERNAME_FIELD='username'
     REQUIRED_FIELDS=["email" , "phone_number"]
+    
+    objects=User_manager()
 
     class Meta:
         db_table="Users"
-        verbos_name=_("user")
-        verbos_name_plural=_("users")
+        verbose_name=_("user")
+        verbose_name_plural=_("users")
 
 
     def get_full_name(self):
@@ -85,6 +91,24 @@ class User(AbstractBaseUser , PermissionsMixin):
         if self.email is not None and self.email.strip() == '':
             self.email = None
         super().save(*args, **kwargs)
+
+
+
+class habitations(models.Model):
+    country=models.CharField(max_length=30 , blank=True)
+    province=models.CharField(max_length=30 , blank=True)
+    city=models.CharField(max_length=30 , blank=True)
+    address=models.TextField(max_length=60 , blank=True)
+    created_at=models.DateTimeField(auto_now_add=True)
+    last_modified=models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+      return f'{self.country}-{self.province}-{self.city}'
+    def get_address(self):
+        return self.address
+    
+
+
 
 
 
@@ -132,19 +156,7 @@ def get_nickname(self):
 
 
 
-class habitations(models.Model):
-    country=models.CharField(max_length=30 , blank=True)
-    province=models.CharField(max_length=30 , blank=True)
-    city=models.CharField(max_length=30 , blank=True)
-    address=models.TextField(max_length=60 , blank=True)
-    created_at=models.DateTimeField(auto_now_add=True)
-    last_modified=models.DateTimeField(auto_now=True)
-    
-    def __str__(self):
-      return f'{self.country}-{self.province}-{self.city}'
-    def get_address(self):
-        return self.address
-    
+
 
 class Device(models.Model):
     WEB=0
@@ -163,8 +175,8 @@ class Device(models.Model):
     for_user=models.ForeignKey(User , on_delete=models.CASCADE)
     UUID=models.UUIDField(null=True , verbose_name="_unique code")
     Device_type=models.CharField(max_length=8 , choices=DEVICE_TYPE , default=WEB)
-    app_version=models.CharField()
-    device_model=models.CharField()
+    app_version=models.CharField(max_length=30 , blank=True)
+    device_model=models.CharField(max_length=30 , blank=True)
     created_time=models.DateTimeField(auto_now_add=True)
  # notify_token = models.CharField(
     #     _('Notification Token'), max_length=200, blank=True,
@@ -175,4 +187,6 @@ class Device(models.Model):
         db_table = 'devices information'
         verbose_name = _('device')
         verbose_name_plural = _('devices')
-        unique_together=("user" , "device_uuid")
+        unique_together=("for_user" , "UUID") # باید اسم فیلد های نوشته شده ، استفاده بشوند
+
+        
