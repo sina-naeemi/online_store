@@ -39,14 +39,14 @@ class User_manager(BaseUserManager):
         return self._create_user(username , email,phone_number , password ,True , True , **extra_fields)
 
     
-    def get_phone_number(self , phone_number): # this part = User.object.get(phone_number=phone_number)
-        pass  # User.object.get_by_phone_number('09123456789')
+    #def get_phone_number(self , phone_number): # this part = User.object.get(phone_number=phone_number)
+        #pass  # User.object.get_by_phone_number('09123456789')
 
 
 class User(AbstractBaseUser , PermissionsMixin):
     username=models.CharField(_("user name") , max_length=40 , unique=True)
-    email=models.EmailField(_("Email"), unique=True)
-    phone_number=models.BigIntegerField(_("phone number") , unique=True , 
+    email=models.EmailField(_("Email"), unique=True , null=True , blank=True)
+    phone_number=models.BigIntegerField(_("phone number") , unique=True , null=True , blank=True,
                                                 validators=[validators.RegexValidator(r'^989[0-3,9]\d{8}$',
                                                                         ('Enter a valid mobile number.'),'invalid')] ,
                                                 error_messages={"tekrari": _("this user name is already used try another one.")})
@@ -175,7 +175,7 @@ class Device(models.Model):
     for_user=models.ForeignKey(User , on_delete=models.CASCADE)
     UUID=models.UUIDField(null=True , verbose_name="_unique code")
     Device_type=models.CharField(max_length=8 , choices=DEVICE_TYPE , default=WEB)
-    app_version=models.CharField(max_length=30 , blank=True)
+    app_version=models.CharField(max_length=30 , blank=True )
     device_model=models.CharField(max_length=30 , blank=True)
     created_time=models.DateTimeField(auto_now_add=True)
  # notify_token = models.CharField(

@@ -21,9 +21,12 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from django.conf.urls import include
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("" , include("products.urls"))
+    path("" , include("products.urls")),
+    path("" , include("User.urls")),
 ]
 
 if settings.IS_DEVEL==True :

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group
 
-from .models import User , Profile , habitations 
+from .models import User , Profile , habitations ,Device
 from django.utils.translation import gettext_lazy as _
 
 from django.contrib.auth.admin import UserAdmin
@@ -55,3 +55,5 @@ class AdminUser(UserAdmin):
 admin.site.register(User , AdminUser)
 admin.site.register(habitations)
 admin.site.unregister(Group)
+
+admin.site.register(Device)
