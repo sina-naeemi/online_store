@@ -5,13 +5,14 @@ from rest_framework.views import APIView
 from rest_framework.response import Response 
 from rest_framework import status
 
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated 
 
 
 from .models import Category , Product , File
 
 from .serializer import productserializer ,fileserializer,categoryserializer
 
+from subscriptions.models import subscription
 class CategoryListView(APIView):
 
     def get(self , request):
@@ -32,7 +33,7 @@ class CategoryDetailView(APIView):
         return Response(serilizer.data)
 
 class Listproducts(APIView):
-    permission_classes=[IsAuthenticated]
+    # permission_classes=[IsAuthenticated]
     
     
     
@@ -45,8 +46,11 @@ class Listproducts(APIView):
         return Response(serializer.data)
     
 class Detailproduct(APIView):
+    permission_classes=[IsAuthenticated]
 
     def get(self ,request, pk):
+        if not subscription.objects.filter(user=request.user).exists:
+            return Response(data="you dont have subscription to access this data" , status=status.HTTP_406_NOT_ACCEPTABLE)
         try:
             product=Product.objects.get(pk=pk)
         except product.DoseNotExist:

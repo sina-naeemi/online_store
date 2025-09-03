@@ -27,6 +27,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("" , include("products.urls")),
     path("" , include("User.urls")),
+    path("" , include("peyments.urls")),
+    path("",include("subscriptions.urls")),
 ]
 
 if settings.IS_DEVEL==True :
