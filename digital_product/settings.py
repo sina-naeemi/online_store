@@ -11,9 +11,10 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 import os
 from pathlib import Path
-from digital_product.local_settings import *
 
 from datetime import timedelta
+
+from decouple import config
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -24,8 +25,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-_cdzfxsv%t(4y*n)mji54&=noi&#i^2!kq8xx^&at9w^sceqqe'
-
+# SECRET_KEY = 'django-insecure-_cdzfxsv%t(4y*n)mji54&=noi&#i^2!kq8xx^&at9w^sceqqe'
+SECRET_KEY = config('SECRET_KEY')
 
 
 
@@ -195,3 +196,10 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
+
+# DEBUG = True
+# IS_DEVEL=True
+# ALLOWED_HOSTS = ["*"]
+DEBUG = config('DEBUG', default=False, cast=bool)
+IS_DEVEL = config('IS_DEVEL', default=False, cast=bool)
+ALLOWED_HOSTS = config('ALLOWED_HOSTS',default='localhost,127.0.0.1').split(',')
