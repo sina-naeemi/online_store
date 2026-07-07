@@ -9,3 +9,5 @@ db.sqlite3
 products/migrations/0001_initial.py
 
 local_settings.py
+
+.env

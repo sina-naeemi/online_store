@@ -35,7 +35,7 @@ class AdminUser(UserAdmin):
     inlines=[InlineProfile]
 
     # را بازنویسی می کنیم search_fields متود مربوط به 
-    def get_search_results(self, request, queryset, search_term): # با ایان بخش از کد ،متود ،قابلیت های سابق سرچش را حفظ می کند
+    def get_search_results(self, request, queryset, search_term): # با این بخش از کد ،متود ،قابلیت های سابق سرچش را حفظ می کند
         queryset , may_have_duplicates = super().get_search_results(request, queryset, search_term)
         try:
             search_term_as_int=int(search_term) # در این بخش ، ویژگی جدید به متود سرچ اضافه می شود

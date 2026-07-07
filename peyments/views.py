@@ -25,6 +25,10 @@ class  bank_gate_view(APIView):
         serializer=Serializer_bank_gate(all_gate , many=True)
         return Response(serializer.data)
     
+
+
+
+
 class payment(APIView):
     permission_classes=[IsAuthenticated]
 
@@ -47,8 +51,14 @@ class payment(APIView):
             phone_number=request.user.phone_number,
             token=str(uuid.uuid4())
             )
-        #return redirect()
+        #get_token=request.post("bank_url_addres" , data=json{"call_back_url":  , "price":   , "order_id": , ...})
+        # obj.token=get_token.token
+
+        # return redirect(f"https://bank_url/?token={obj.token}") #میتونی از کوئری پارامز استفاده نکنی
         return Response(data={"token":obj.token , 'bank gate url':"" })#هم میتوان اضافه نمود call back url 
+    
+
+    
     def post(self , request):
         tk=request.data.get("token")
         st=request.data.get("status")

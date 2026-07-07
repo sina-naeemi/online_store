@@ -5,8 +5,8 @@ from .models import Category,Product,File
 
 @admin.register(Category)
 class categoryAdmin (admin.ModelAdmin):
-    list_display=["title",'is_enable' ,"created_time" , "parent"]
-    list_filter=['is_enable' , 'parent']
+    list_display=["title",'is_enable' ,"created_time" ]
+    list_filter=['is_enable' ]
     search_fields=["title"]
 
 
@@ -18,8 +18,8 @@ class fileAdmin(admin.StackedInline):
 
 @admin.register(Product)
 class productAdmin(admin.ModelAdmin):
-    list_display=["title",'is_enable' ,"created_time"  ]
-    list_filter=["is_enable"]
+    list_display=["title","genre",'is_enable' ,"created_time"  ]
+    list_filter=["is_enable" ,"genre"]
     search_fields=["title"]
     filter_horizontal=["Categories"]
     inlines=[fileAdmin]

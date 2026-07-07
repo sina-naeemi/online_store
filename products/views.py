@@ -10,7 +10,8 @@ from rest_framework.permissions import IsAuthenticated
 
 from .models import Category , Product , File
 
-from .serializer import productserializer ,fileserializer,categoryserializer
+from .serializer import (productserializer ,fileserializer,categoryserializer ,
+                          product_Detail_serializer , Genre_serializer)#category_Detail_serializer
 
 from subscriptions.models import subscription
 class CategoryListView(APIView):
@@ -21,15 +22,16 @@ class CategoryListView(APIView):
         return Response(seilizer.data)
     
 
-class CategoryDetailView(APIView):
+class AllGenre(APIView):
     
     def get(self , request , pk):
         try:
-            category=Category.objects.get(pk=pk)
-        except category.DoseNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            subject=Product.objects.filter(Categories__id=pk)
+
+        except Category.DoesNotExist:
+            return Response(data="این کتگوری وجود نداره",status=status.HTTP_404_NOT_FOUND)
         
-        serilizer=categoryserializer(category , context={"request":request})
+        serilizer=Genre_serializer(subject , many=True,context={"request":request})
         return Response(serilizer.data)
 
 class Listproducts(APIView):
@@ -40,43 +42,63 @@ class Listproducts(APIView):
     def get(self , request):
         products=Product.objects.all()
         serializer=productserializer(products , many=True , context={"request":request})           
-        print(request.user)
-
-        print(request.auth)
+        # print(request.user)
+        # print(request.auth)
         return Response(serializer.data)
     
 class Detailproduct(APIView):
-    permission_classes=[IsAuthenticated]
+    # permission_classes=[IsAuthenticated]
 
     def get(self ,request, pk):
-        if not subscription.objects.filter(user=request.user).exists:
-            return Response(data="you dont have subscription to access this data" , status=status.HTTP_406_NOT_ACCEPTABLE)
+        # if not subscription.objects.filter(user=request.user).exists:
+        #     return Response(data="you dont have subscription to access this data" , status=status.HTTP_406_NOT_ACCEPTABLE)
         try:
             product=Product.objects.get(pk=pk)
-        except product.DoseNotExist:
+        except Product.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         
-        serializer=productserializer(product , context={"request":request})
+        serializer=product_Detail_serializer(product , context={"request":request})
         return Response(serializer.data)
+    
+class ProductByGenre(APIView):
+    
+    def get(seld , request , genre_name):
+        products = Product.objects.filter(genre=genre_name)
+        if not products.exists():
+            return Response({"error": "No products found for this category"},status=status.HTTP_404_NOT_FOUND)
+        serializer = productserializer(products, many=True, context={"request": request})
+        return Response(serializer.data)
+class ProductByCategory(APIView):
+
+    def get(self, request , category_id):
+        product=Product.objects.filter(Categories__id=category_id)
+        
+        if not product.exists():
+            return Response({"error": "No products found for this category"},status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = productserializer(product, many=True, context={"request": request})
+        return Response(serializer.data)
+
 
 
 
 class FileListView(APIView):
+    # permission_classes=[IsAuthenticated]
     
     def get(self , request , product_id ) :
+        # if not subscription.objects.filter(user=request.user).exists:
+        #     return Response(data="you dont have subscription to access this data" , status=status.HTTP_406_NOT_ACCEPTABLE)
         file=File.objects.filter(product_id=product_id)
         serializer=fileserializer(file , many=True , context={"request":request})
         return Response(serializer.data)
     
-
-
 class FileDetailView(APIView):
     
     def get(self , request , product_id , pk):
         try:
             file=File.objects.get(product_id=product_id , pk=pk)
-        except file.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        except File.DoesNotExist:
+            return Response(data="not found",status=status.HTTP_404_NOT_FOUND)
         
         serializer=fileserializer(file ,context={"request":request} )
         return Response(serializer.data)

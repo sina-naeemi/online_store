@@ -28,7 +28,8 @@ class User_manager(BaseUserManager):
         if not username:
             if phone_number:
                 username= str(phone_number)[-5:]  +random.choice("qwertyuiopasdfghjklzxcvbnm") #به تصادف یکی از عناصر رشته را انتخاب می کند
-            elif email : email.split("@" , 1)[0] #  یکبار (۱) ، عملیان تقسیم کردن ایمیل را از @انجام میدهد و بخش ابتدایی را بر میدارد
+            elif email : 
+                username=email.split("@" , 1)[0] #  یکبار (۱) ، عملیان تقسیم کردن ایمیل را از @انجام میدهد و بخش ابتدایی را بر میدارد
         while User.objects.filter(username=username).exists():
             username+=random.randint(1,100)
 
@@ -46,7 +47,7 @@ class User_manager(BaseUserManager):
 class User(AbstractBaseUser , PermissionsMixin):
     username=models.CharField(_("user name") , max_length=40 , unique=True)
     email=models.EmailField(_("Email"), unique=True , null=True , blank=True)
-    phone_number=models.BigIntegerField(_("phone number") , unique=True , null=True , blank=True,
+    phone_number=models.BigIntegerField(_("phone number") , unique=True ,
                                                 validators=[validators.RegexValidator(r'^989[0-3,9]\d{8}$',
                                                                         ('Enter a valid mobile number.'),'invalid')] ,
                                                 error_messages={"tekrari": _("this user name is already used try another one.")})
@@ -60,7 +61,7 @@ class User(AbstractBaseUser , PermissionsMixin):
 
     
     USERNAME_FIELD='username'
-    REQUIRED_FIELDS=["email" , "phone_number"]
+    REQUIRED_FIELDS=[ "phone_number"]
     
     objects=User_manager()
 
@@ -91,6 +92,9 @@ class User(AbstractBaseUser , PermissionsMixin):
         if self.email is not None and self.email.strip() == '':
             self.email = None
         super().save(*args, **kwargs)
+
+    def __str__(self):
+         return self.username
 
 
 

@@ -5,8 +5,9 @@ from django.db import models
 from utils.validation import validate_sku
 
 class plans(models.Model):
+    # gateways=models.ManyToManyField("peyments.banks_Gate",verbose_name="gateways" , on_delete=models.SET_NULL)
     title=models.CharField(verbose_name=_("title"),max_length=60)
-    sku=models.CharField(_("code adnbar")    , db_index=True , validators=[validate_sku])
+    sku=models.CharField(_("code adnbar")    , db_index=True , validators=[validate_sku])#stock keeping units
     avatar=models.ImageField(_("picture"  ), upload_to="planes/" , blank=True , null=True)
     discreaption=models.TextField(_("discreaption"),blank=True )
     price=models.IntegerField(_("price"))

@@ -1,9 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-# Create your models here.
 
 class Category(models.Model):
-    parent=models.ForeignKey("self" , verbose_name=_('main field') , on_delete=models.CASCADE , blank=True , null=True)
+    parent=models.ForeignKey('self', verbose_name="parent" , on_delete=models.CASCADE , null=True , blank=True)
     title=models.CharField(_("title"),max_length=50)
     description=models.TextField(verbose_name=_("description") , blank=True , )
     avatar=models.ImageField(verbose_name=_("picture") ,blank=True,upload_to="categories/" )
@@ -11,13 +10,13 @@ class Category(models.Model):
     created_time=models.DateTimeField(verbose_name=_("created_time"),auto_now_add=True)
     updated_time=models.DateTimeField(verbose_name=_("updated_time"),auto_now=True)
 
-    def __str__(self):
-        return self.title
-
     class Meta:
         db_table="categories"
         verbose_name=_("category")
         verbose_name_plural=_("categories")
+    
+    def __str__(self):
+        return self.title
     
 
 class Product(models.Model):
@@ -29,10 +28,18 @@ class Product(models.Model):
         (PRODUCT_AUIDO , _("audio")),
         (PRODUCT_FILE ,_("file"))
     )
+    # PRODUCT_GENRE=[
+    #     ("romance" , _("عاضقانه")),
+    #     ("action" , _("اکشن")),
+    #     ("drama" , _("درام")),
+    #     ("fantesy" , _("فانتزی")),
+    #     ()
+    # ]
 
 
     title=models.CharField(verbose_name=_("title") , max_length=50)
     description=models.TextField(verbose_name=_("description") , blank=True , )
+    genre=models.CharField(_("genre"),max_length=50 )
     product_type=models.PositiveSmallIntegerField("produc type" , choices=PRODUCT_TYPYE,default=PRODUCT_MOVIE)
     avatar=models.ImageField(verbose_name=_("picture") ,blank=True,upload_to="products/" )
     is_enable=models.BooleanField(default=False)

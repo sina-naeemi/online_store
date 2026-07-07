@@ -8,6 +8,8 @@ class Serializer_bank_gate(serializers.ModelSerializer):
         model=banks_Gate
         fields=["id","name", "description" , "avatar"] #برای نشون دادن به کاربر همین قدر اطلاعات کافیه
 
+        
+
 
 
 

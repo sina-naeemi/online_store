@@ -13,7 +13,7 @@ class banks_Gate(models.Model):
     credentials=models.TextField(verbose_name=_("credentials") , blank=True)
     created_time=models.DateTimeField(verbose_name=_("created time") , auto_now_add=True)
     updated_time=models.DateTimeField(verbose_name=_("update time") , auto_now=True)
-    class Meeta:
+    class Meta:
         db_table="banks Gate"
         verbose_name="bank gate"
         verbose_name_plural="banks Gate"
