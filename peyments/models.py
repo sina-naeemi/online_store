@@ -51,7 +51,7 @@ class transaction(models.Model):
     status=models.PositiveSmallIntegerField(verbose_name=_("status") , choices=STATUS_TYPE, default=status_init , db_index=True)
     price=models.PositiveIntegerField(_('price'), default=0)
     phone_number=models.BigIntegerField(_('phone number'),validators=[validate_phone_number,] ,db_index=True)
-    token=models.CharField(null=True) #میتونه هر تایپی باشه
+    token=models.CharField(max_length=512 , null=True) #میتونه هر تایپی باشه
     consumed_code=models.PositiveIntegerField(_('tracking code'), null=True, db_index=True)
     created_time=models.DateTimeField(_("creation time") , auto_now_add=True, db_index=True)
     updated_time=models.DateTimeField(_('modification time'), auto_now=True)

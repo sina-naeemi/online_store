@@ -29,7 +29,7 @@ class UserRegister(APIView):
         code= int(random.randint(10000,99999))
 
         # میتونی متود رو بدون انتساب به متغیر و فقط با فراخوانی متود پیاده سازی کنی
-        cache_pass=cache.set("phone_number" , code , 2*60) 
+        cache_pass=cache.set(F"otp_{phone_number}" , code , timeout=2*60) 
         # برای استفاده از حافظه موقت از این دستور(شامل ۳ آرگومان) استفاده میکنیمز
 
         # send message (sms or email)
@@ -40,7 +40,7 @@ class GetToken(APIView):
     def post(self , request):    
         phone_number=request.data.get("phone_number")
         code=request.data.get("code")
-        cache_info=cache.get("phone_number")
+        cache_info=cache.get(F"otp_{phone_number}")
         if code != cache_info:
             return Response(status=status.HTTP_406_NOT_ACCEPTABLE ,data="code is wrong")
         # u=Device.objects.get(for_user=request.user)

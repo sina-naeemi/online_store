@@ -50,8 +50,8 @@ class Detailproduct(APIView):
     # permission_classes=[IsAuthenticated]
 
     def get(self ,request, pk):
-        # if not subscription.objects.filter(user=request.user).exists:
-        #     return Response(data="you dont have subscription to access this data" , status=status.HTTP_406_NOT_ACCEPTABLE)
+        if not subscription.objects.filter(user=request.user).exists():
+            return Response(data="you dont have subscription to access this data" , status=status.HTTP_406_NOT_ACCEPTABLE)
         try:
             product=Product.objects.get(pk=pk)
         except Product.DoesNotExist:
@@ -86,8 +86,8 @@ class FileListView(APIView):
     # permission_classes=[IsAuthenticated]
     
     def get(self , request , product_id ) :
-        # if not subscription.objects.filter(user=request.user).exists:
-        #     return Response(data="you dont have subscription to access this data" , status=status.HTTP_406_NOT_ACCEPTABLE)
+        if not subscription.objects.filter(user=request.user).exists():
+            return Response(data="you dont have subscription to access this data" , status=status.HTTP_406_NOT_ACCEPTABLE)
         file=File.objects.filter(product_id=product_id)
         serializer=fileserializer(file , many=True , context={"request":request})
         return Response(serializer.data)

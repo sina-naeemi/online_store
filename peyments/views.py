@@ -39,7 +39,7 @@ class payment(APIView):
         try :
             pack=plans.objects.get(pk=pack_id , is_enable=True)
             port=banks_Gate.objects.get(pk=bank_port_id ,is_enable=True )
-        except (plans.DoesNotExist or banks_Gate.DoesNotExist):
+        except (plans.DoesNotExist , banks_Gate.DoesNotExist):
             return Response(status=status.HTTP_404_NOT_FOUND)
         
         obj=transaction.objects.create(
@@ -64,16 +64,16 @@ class payment(APIView):
         st=request.data.get("status")
         try:
             obj=transaction.objects.get(token=tk)
-        except obj.DoesNotExist:
+        except transaction.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         if st != 10:
             obj.status=obj.STATUS_CANCELLED
-            obj.save
+            obj.save()
             return Response(data="payment get cancelled"    ,status=status.HTTP_406_NOT_ACCEPTABLE)
         verify=requests.post("bank_verify_url" , data={}) #این بخش نیاز به یادگیری دارد
         if verify.status_code // 100 !=2: #این خط کد ، رقم صدگان کد وضعیت گرفته شده را نشان میددهد
             obj.status=obj.STATUS_FAIL
-            obj.save
+            obj.save()
             return Response (data="the transaction failed",status=status.HTTP_400_BAD_REQUEST)
         obj.status=obj.STATUS_PAID
         obj.save()

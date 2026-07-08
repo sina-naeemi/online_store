@@ -31,7 +31,7 @@ class User_manager(BaseUserManager):
             elif email : 
                 username=email.split("@" , 1)[0] #  یکبار (۱) ، عملیان تقسیم کردن ایمیل را از @انجام میدهد و بخش ابتدایی را بر میدارد
         while User.objects.filter(username=username).exists():
-            username+=random.randint(1,100)
+            username+=str(random.randint(1,100))
 
         return self._create_user(username, email , phone_number,password , False , False , **extra_fields)
 
@@ -61,7 +61,7 @@ class User(AbstractBaseUser , PermissionsMixin):
 
     
     USERNAME_FIELD='username'
-    REQUIRED_FIELDS=[ "phone_number"]
+    REQUIRED_FIELDS=[ "phone_number" , "email"]
     
     objects=User_manager()
 
@@ -72,7 +72,7 @@ class User(AbstractBaseUser , PermissionsMixin):
 
 
     def get_full_name(self):
-        full_name=f"{self.first_name} {self.last_name}"
+        full_name=f"{self.first_name} {self.last_name}".strip()
         return full_name
 
     def get_short_name(self):
@@ -125,7 +125,7 @@ class Profile(models.Model):
 
     user=models.OneToOneField(User ,verbose_name=_("for user") ,on_delete=models.CASCADE )
     nickname=models.CharField(_("nick name") , blank=True , null=True , max_length=40)
-    Gender=models.CharField( choices=GENDER_CHOICE , default="UNKNOWN" , verbose_name=_("جنسیت"))
+    Gender=models.CharField(max_length=20 , choices=GENDER_CHOICE , default="UNKNOWN" , verbose_name=_("جنسیت"))
     birthday=models.DateField(null=True , verbose_name=_("birthday") , blank=True)
     avatar=models.ImageField(verbose_name=_("عکس پروفایل") , blank=True)
     from_at=models.ForeignKey(to=habitations , verbose_name=_("habitation") , null=True , on_delete=models.SET_NULL)
@@ -141,21 +141,16 @@ class Profile(models.Model):
         verbose_name = _('profile')
         verbose_name_plural = _('profiles')
 
-class Meta:
-        db_table = 'user_profiles'
-        verbose_name = _('profile')
-        verbose_name_plural = _('profiles')
-
-@property
-def get_first_name(self):
+    @property
+    def get_first_name(self):
         return self.user.first_name
 
-@property
-def get_last_name(self):
+    @property
+    def get_last_name(self):
         return self.user.last_name
 
-def get_nickname(self):
-        return self.nick_name if self.nick_name else self.user.username
+    def get_nickname(self):
+        return self.nickname if self.nickname else self.user.username
 
 
 
