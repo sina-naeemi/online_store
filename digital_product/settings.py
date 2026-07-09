@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "User",
     "subscriptions",
     "peyments" ,
+    'drf_spectacular',
     
 
     'rest_framework',
@@ -163,7 +164,15 @@ CACHES = {
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema', # swager برای اضافه کردن 
+}
+
+# swager تنظیکات مینیمال و اختیاری  برای 
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Online Store API',
+    'DESCRIPTION': 'API documentation for the online store project',
+    'VERSION': '1.0.0',
 }
 
 #simple_jwt settings
@@ -213,3 +222,14 @@ SIMPLE_JWT = {
 DEBUG = config('DEBUG', default=False, cast=bool)
 IS_DEVEL = config('IS_DEVEL', default=False, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS',default='localhost,127.0.0.1').split(',')
+
+
+# Email sending (Bravo)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+# EMAIL_USE_SSL = True
+EMAIL_HOST_USER = config('GMAIL_USER')
+EMAIL_HOST_PASSWORD = config('GMAIL_APP_PASSWORD')
+DEFAULT_FROM_EMAIL = config('GMAIL_USER')

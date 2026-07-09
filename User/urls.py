@@ -7,8 +7,8 @@ from rest_framework_simplejwt.views import TokenObtainPairView,TokenRefreshView
 
 
 urlpatterns=[
-    path("Register/" , UserRegister.as_view()) , 
-    # path("get-token/" , GetToken.as_view()),
-    path('َusers/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('users/token/refresh/', TokenRefreshView.as_view(), name='token_refresh') #هنگامی که توکن منقضی شد با این ،یک جدیدش ایجاد میشه
+    path("account/enter/" , UserRegister.as_view()) , 
+    path("verify-otp/" , GetToken.as_view()),
+    # path('َusers/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh') #هنگامی که توکن منقضی شد با این ،یک جدیدش ایجاد میشه
 ]

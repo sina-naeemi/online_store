@@ -15,11 +15,18 @@ from datetime import timedelta
 
 import requests
 
+from drf_spectacular.utils import (extend_schema,extend_schema_view)
+
 
 
 
 class  bank_gate_view(APIView):
-
+    @extend_schema(
+    tags=["Payments"],
+    summary="Bank gateways",
+    description="Return all enabled payment gateways.",
+    responses=Serializer_bank_gate(many=True),
+    )
     def get(self , request):
         all_gate=banks_Gate.objects.filter(is_enable=True)
         serializer=Serializer_bank_gate(all_gate , many=True)
@@ -31,7 +38,12 @@ class  bank_gate_view(APIView):
 
 class payment(APIView):
     permission_classes=[IsAuthenticated]
-
+    @extend_schema(
+    tags=["Payments"],
+    summary="Bank gateways",
+    description="Return all enabled payment gateways.",
+    responses=Serializer_bank_gate(many=True),
+    )
     def get(self , request):
         bank_port_id=request.query_params.get("port")
         pack_id=request.query_params.get("package")
@@ -58,7 +70,12 @@ class payment(APIView):
         return Response(data={"token":obj.token , 'bank gate url':"" })#هم میتوان اضافه نمود call back url 
     
 
-    
+    @extend_schema(
+    tags=["Payments"],
+    summary="Bank gateways",
+    description="Return all enabled payment gateways.",
+    responses=Serializer_bank_gate(many=True),
+    )
     def post(self , request):
         tk=request.data.get("token")
         st=request.data.get("status")
