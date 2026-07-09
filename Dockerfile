@@ -3,12 +3,15 @@ FROM python:3.12-slim
 # جلوگیری از cache و بافر
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1
+ENV PIP_NO_CACHE_DIR=1
 
 WORKDIR /app
 
-# نصب وابستگی‌های سیستمی Pillow
+# نصب وابستگی های سیستمی و پایگاه داده
 RUN apt-get update && apt-get install -y \
-    libjpeg-dev zlib1g-dev \
+    gcc \
+    libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # کپی requirements
@@ -16,7 +19,7 @@ COPY requirement.txt .
 
 # نصب پکیج‌ها
 RUN pip install --upgrade pip
-RUN pip install --no-cache-dir -r requirement.txt
+RUN pip install -r requirement.txt
 
 # کپی کل پروژه (بدون venv)
 COPY . .
