@@ -9,7 +9,9 @@ class Serializer_bank_gate(serializers.ModelSerializer):
         fields=["id","name", "description" , "avatar"] #برای نشون دادن به کاربر همین قدر اطلاعات کافیه
 
         
-
+class serilizer_callback(serializers.Serializer):
+    token=serializers.CharField()
+    status=serializers.IntegerField()
 
 
 

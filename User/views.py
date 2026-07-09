@@ -13,23 +13,24 @@ from django.core.cache import cache
 
 from drf_spectacular.utils import (extend_schema,extend_schema_view)
 
+from .serializer import requestOTPserializer , verifyOTPserializer
+
 class UserRegister(APIView):
     @extend_schema(
         tags=["Authentication"],
         summary="Register user",
-        description="Create a new user if needed and send a 5-digit OTP to the user's email."
+        description="Create a new user if needed and send a 5-digit OTP to the user's email.",
+        request=requestOTPserializer,
     )
 
     def post(self , request):
-        phone_number=request.data.get("phone_number" )
-        username = request.data.get("username")
-        email = request.data.get("email")
+        serilalizer=requestOTPserializer(data=request.data)
+        serilalizer.is_valid(raise_exception=True)#اگه داده ها معتبر نبودند خودکار ارور 400 برمیگردونه raise_exception=True با
 
-        if not email:
-            return Response(status=status.HTTP_406_NOT_ACCEPTABLE, data="email is required")
-        if not phone_number :
-            return Response(status=status.HTTP_406_NOT_ACCEPTABLE , data="phone number is required")
-        
+        phone_number=serilalizer._validated_data["phone_number"]
+        username = serilalizer.validated_data["username"]
+        email =serilalizer.validated_data["email"]
+
         try:
             user=User.objects.get(email=email)
         except User.DoesNotExist:
@@ -55,16 +56,17 @@ class GetToken(APIView):
     tags=["Authentication"],
     summary="Verify OTP",
     description="Verify the OTP code and return JWT access and refresh tokens.",
+    request=verifyOTPserializer
     )
     def post(self , request):    
-        # phone_number=request.data.get("phone_number")
-        email = request.data.get("email")
-        code=request.data.get("code")
+        serializer=verifyOTPserializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        email = serializer.validated_data["email"]
+        code=serializer.validated_data["code"]
+
         cache_info=cache.get(F"otp_{email}")
 
-        if not email:
-            return Response(status=status.HTTP_406_NOT_ACCEPTABLE, data="email is required")
-        
         if cache_info is None:
             return Response(status=status.HTTP_406_NOT_ACCEPTABLE, data="code expired or not requested")
         if str(code) != str(cache_info):

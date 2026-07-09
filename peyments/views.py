@@ -2,7 +2,7 @@ import uuid
 from django.shortcuts import render , redirect
 
 from .models import banks_Gate , transaction
-from .serializer import Serializer_bank_gate
+from .serializer import Serializer_bank_gate , serilizer_callback
 from subscriptions.models import plans ,subscription
 
 from rest_framework.views import APIView
@@ -15,7 +15,7 @@ from datetime import timedelta
 
 import requests
 
-from drf_spectacular.utils import (extend_schema,extend_schema_view)
+from drf_spectacular.utils import extend_schema,extend_schema_view
 
 
 
@@ -74,24 +74,32 @@ class payment(APIView):
     tags=["Payments"],
     summary="Bank gateways",
     description="Return all enabled payment gateways.",
-    responses=Serializer_bank_gate(many=True),
+    request=serilizer_callback
+    # responses=Serializer_bank_gate(many=True),
     )
     def post(self , request):
-        tk=request.data.get("token")
-        st=request.data.get("status")
+        serializer=serilizer_callback(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        tk=serializer.validated_data["token"]
+        st=serializer.validated_data["status"]
+        
         try:
             obj=transaction.objects.get(token=tk)
         except transaction.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+        
         if st != 10:
             obj.status=obj.STATUS_CANCELLED
             obj.save()
             return Response(data="payment get cancelled"    ,status=status.HTTP_406_NOT_ACCEPTABLE)
+        
         verify=requests.post("bank_verify_url" , data={}) #این بخش نیاز به یادگیری دارد
         if verify.status_code // 100 !=2: #این خط کد ، رقم صدگان کد وضعیت گرفته شده را نشان میددهد
             obj.status=obj.STATUS_FAIL
             obj.save()
             return Response (data="the transaction failed",status=status.HTTP_400_BAD_REQUEST)
+        
         obj.status=obj.STATUS_PAID
         obj.save()
 
