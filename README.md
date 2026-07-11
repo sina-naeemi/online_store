@@ -1,26 +1,22 @@
 # Online Store API
 
-A REST API for a digital products store — built with Django REST Framework. Uses passwordless email/OTP authentication with JWT, subscription-based content access, and payment gateway integration.
-
-**Tech stack:** Django 5.2 · DRF · PostgreSQL · JWT (`simplejwt`) · Swagger (`drf-spectacular`) · Docker
-
-# Online Store API
-
 ![Python](https://img.shields.io/badge/Python-3.12-blue?logo=python)
 ![Django](https://img.shields.io/badge/Django-5.2-darkgreen?logo=django)
-![DRF](https://img.shields.io/badge/DRF-REST%20Framework-red)
+![Django REST Framework](https://img.shields.io/badge/Django%20REST%20Framework-DRF-red)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue?logo=postgresql)
-![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker)
-![JWT](https://img.shields.io/badge/Auth-JWT-orange)
-![Swagger](https://img.shields.io/badge/API-Swagger-85EA2D?logo=swagger)
+![Docker Compose](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker)
+![JWT](https://img.shields.io/badge/JWT-simplejwt-orange)
+![Swagger](https://img.shields.io/badge/Swagger-drf--spectacular-85EA2D?logo=swagger)
 
-A REST API for a digital products store — built with Django REST Framework. Uses passwordless email/OTP authentication with JWT, subscription-based content access, and payment gateway integration.
+A RESTful API for a digital products store — built with Django REST Framework. Uses passwordless email OTP authentication, JWT-based authorization, subscription-based content access, and payment gateway integration.
+
 ## Setup (Docker)
 
 ```bash
 git clone https://github.com/sina-naeemi/online_store.git
 cd online_store
 cp .env.example .env   # fill in your values, see below
+docker compose build
 docker compose up -d
 docker compose exec web python manage.py migrate
 docker compose exec web python manage.py createsuperuser
